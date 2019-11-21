@@ -1,0 +1,33 @@
+from pandas import read_csv
+import pandas as pd
+
+def loadDataSet(filename):
+    df = pd.read_csv(filename)
+    return df
+
+# REPLACING MISSING VALUES WITH THE MOST FREQUENT VALUE IN THE ATTRIBUTE
+def replace_missing(data_set):
+          data_set['WORKCLASS'] = data_set['WORKCLASS'].replace(to_replace = ' ?', value = ' Private')
+          data_set = data_set.to_csv('DATA-replaced-missing.csv', sep =',', index = False)
+          data = pd.read_csv("DATA-replaced-missing.csv")
+          print("SIZE OF DATASET WITH REPLACING MISSING VALUES WITH MAXIMUN FREQUENCY",data.shape)
+          return data.shape
+          
+
+def remove_missing(data_set):
+          
+          data_set = data_set[data_set['WORKCLASS'] != ' ?']
+          data_set = data_set.to_csv('DATA-removed-missing.csv', sep = ',', index = False)
+          data = pd.read_csv("DATA-removed-missing.csv")
+          print("SIZE OF DATASET WITH REMOVING MISSING VALUES",data.shape)
+          return data.shape
+
+filename = 'adult_dataset.csv'
+df = loadDataSet(filename)        
+df.columns = ['AGE','WORKCLASS','FNLWGT','EDUCATION','EDUCATION-NUM','MARITAL STATUS','OCCUPATION','RELATIONSHIP','RACE','SEX','CAPITAL-GAIN','CAPITAL-LOSS','HOURS-PER-WEEK','NATIVE-COUNTRY','CLASS']
+# DATA-PREPROCESSING - REMOVING THE COLUMNS FNLWGT AND EDUCATION-NUM
+df = df.drop('FNLWGT',axis=1)			
+df = df.drop('EDUCATION-NUM',axis=1)
+remove_size=remove_missing(df)
+replace_size=replace_missing(df)
+print("TOTAL LOSS OF DATASET IS {} SO IT IS NOT A GOOD IDEA TO HANDLE MISSING VALUES".format(replace_size[0]-remove_size[0]))
